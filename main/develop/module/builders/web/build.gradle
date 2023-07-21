@@ -1,0 +1,13 @@
+apply plugin: 'war'
+
+dependencies {
+    implementation project(':services')
+    implementation project(':utils')
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+war {
+    archiveBaseName = 'web'
+    destinationDirectory = file('build/libs')
+}
+
