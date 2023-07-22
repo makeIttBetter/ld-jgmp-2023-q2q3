@@ -1,0 +1,8 @@
+// This file serves as a placeholder
+
+
+subprojects {
+    dependencies {
+        implementation 'main:develop:module:builders'
+    }
+}

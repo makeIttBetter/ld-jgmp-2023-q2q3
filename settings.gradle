@@ -1,0 +1,2 @@
+rootProject.name = 'builders-parent'
+includeBuild("main/develop/module/builders")
