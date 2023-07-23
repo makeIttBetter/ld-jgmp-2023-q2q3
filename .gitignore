@@ -37,5 +37,6 @@ out/
 
 ### VS Code ###
 .vscode/
-/gradlew
-/gradlew.bat
+**/gradlew
+**/gradlew.bat
+**/dependency-reduced-pom.xml

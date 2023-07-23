@@ -1,2 +1,1 @@
-rootProject.name = 'builders-parent'
-includeBuild("main/develop/module/builders")
+// This file serves as a placeholder
