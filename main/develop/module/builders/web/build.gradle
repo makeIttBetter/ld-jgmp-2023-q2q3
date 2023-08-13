@@ -1,4 +1,5 @@
 apply plugin: 'war'
+apply plugin: 'com.builders.web.version-plugin'
 
 dependencies {
     implementation project(':services')
@@ -6,8 +7,14 @@ dependencies {
     providedCompile 'javax.servlet:servlet-api:2.5'
 }
 
+// Configure the WAR plugin
 war {
     archiveBaseName = 'web'
     destinationDirectory = file('build/libs')
 }
 
+// Add repositories if needed, for example:
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
