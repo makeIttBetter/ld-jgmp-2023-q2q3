@@ -1,5 +1,4 @@
 apply plugin: 'war'
-apply plugin: 'com.builders.web.version-plugin'
 
 dependencies {
     implementation project(':services')
@@ -11,10 +10,17 @@ dependencies {
 war {
     archiveBaseName = 'web'
     destinationDirectory = file('build/libs')
+
+    // Setting up the archiveVersion for the war file name
+    def majorVersion = findProperty("majorVersion") ?: '0'
+    def minorVersion = findProperty("minorVersion") ?: '0'
+    def envDescription = project.hasProperty('envDescription') ? envDescription : 'LOCAL'
+    archiveVersion = "${majorVersion}.${minorVersion}-${envDescription}"
 }
 
-// Add repositories if needed, for example:
+// Add repositories if needed
 repositories {
     mavenCentral()
     mavenLocal()
 }
+
