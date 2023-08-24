@@ -24,6 +24,7 @@ if ! echo "$1" | grep -qE "$pattern"; then
     echo "Commit message should match pattern: TICKET-XXX: Description"
     exit 1 # Exit with an error status
 fi
+
 Make the hook executable:
 To ensure the hook can be run, change its permissions with the chmod command:
 bash
@@ -45,6 +46,7 @@ if ! ./build.sh; then
     echo "Build failed, aborting commit"
     exit 1
 fi
+
 Make the hook executable:
 bash
 Copy code
@@ -65,6 +67,7 @@ if [ -n "$(git status --porcelain)" ]; then
     echo "You have uncommitted changes. Please commit or stash them before pushing."
     exit 1
 fi
+
 Make the hook executable:
 bash
 Copy code
