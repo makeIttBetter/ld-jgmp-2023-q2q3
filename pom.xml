@@ -12,6 +12,7 @@
     <modules>
         <module>main/develop/module/database</module>
         <module>main/develop/module/dbmigration</module>
+        <module>main/develop/module/builders</module>
     </modules>
 
     <properties>
