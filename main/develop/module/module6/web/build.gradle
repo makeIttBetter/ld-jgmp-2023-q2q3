@@ -1,0 +1,26 @@
+apply plugin: 'war'
+
+dependencies {
+    implementation project(':services')
+    implementation project(':utils')
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+// Configure the WAR plugin
+war {
+    archiveBaseName = 'web'
+    destinationDirectory = file('build/libs')
+
+    // Setting up the archiveVersion for the war file name
+    def majorVersion = findProperty("majorVersion") ?: '0'
+    def minorVersion = findProperty("minorVersion") ?: '0'
+    def envDescription = project.hasProperty('envDescription') ? envDescription : 'LOCAL'
+    archiveVersion = "${majorVersion}.${minorVersion}-${envDescription}"
+}
+
+// Add repositories if needed
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
