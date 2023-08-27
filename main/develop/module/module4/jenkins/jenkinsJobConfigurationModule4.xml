@@ -1,0 +1,97 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>BUILD_TOOL</name>
+          <description>Choose a tool to build the project</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Gradle</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.2.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://git.epam.com/kyrylo_levchenko/ld-jgmp-2023-q2q3.git</url>
+        <credentialsId>gitlab.com</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/module4</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="empty-list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.TimerTrigger>
+      <spec>0 2 * * *</spec>
+    </hudson.triggers.TimerTrigger>
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.4.3">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.6"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition" plugin="run-condition@1.6">
+        <arg1>${BUILD_TOOL}</arg1>
+        <arg2>Gradle</arg2>
+        <ignoreCase>false</ignoreCase>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.gradle.Gradle plugin="gradle@2.8.2">
+          <switches></switches>
+          <tasks>-b main/develop/module/builders/build.gradle clean build -PenvDescription=RELEASE</tasks>
+          <rootBuildScriptDir></rootBuildScriptDir>
+          <buildFile></buildFile>
+          <gradleName>Gradle</gradleName>
+          <useWrapper>false</useWrapper>
+          <makeExecutable>false</makeExecutable>
+          <useWorkspaceAsHome>false</useWorkspaceAsHome>
+          <wrapperLocation></wrapperLocation>
+          <passAllAsSystemProperties>false</passAllAsSystemProperties>
+          <projectProperties></projectProperties>
+          <passAllAsProjectProperties>false</passAllAsProjectProperties>
+        </hudson.plugins.gradle.Gradle>
+        <hudson.tasks.BatchFile>
+          <command>java -jar main/develop/module/builders/admin/build/libs/admin-1.0-SNAPSHOT.jar &quot;Hello World! This is my Gradle message.&quot;&#xd;
+copy &quot;main\develop\module\builders\web\build\libs\*.war&quot; &quot;main\develop\module\builders\web&quot;</command>
+          <configuredLocalRules/>
+        </hudson.tasks.BatchFile>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>main/develop/module/builders/web/*.war</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+      <followSymlinks>false</followSymlinks>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.26"/>
+  </buildWrappers>
+</project>

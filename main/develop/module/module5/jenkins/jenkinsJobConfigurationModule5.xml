@@ -1,0 +1,166 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>BUILD_TOOL</name>
+          <description>Choose a tool to build the project</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Gradle</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.2.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://git.epam.com/kyrylo_levchenko/ld-jgmp-2023-q2q3.git</url>
+        <credentialsId>37bcbaa6-9111-45a8-b5dc-82200c25b29b</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/module5</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="empty-list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.TimerTrigger>
+      <spec>0 2 * * *</spec>
+    </hudson.triggers.TimerTrigger>
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.4.3">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.6"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition" plugin="run-condition@1.6">
+        <arg1>${BUILD_TOOL}</arg1>
+        <arg2>Gradle</arg2>
+        <ignoreCase>false</ignoreCase>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.tasks.Shell>
+          <command>version_file=&quot;main/develop/module/builders/web/version.properties&quot;
+version_temp_file=&quot;main/develop/module/builders/web/version_temp.properties&quot;
+# Step 1
+# Create file version.txt that will contain actual minor and major versions
+if [ ! -f $version_file ]; then
+echo &quot;Creating $version_file file&quot;
+echo -e &quot;minorVersion=0\nmajorVersion=1&quot; &gt; $version_file
+fi
+
+#Step 2
+# Get the minor version
+minorVersion=$(sed -n &apos;s/^minorVersion=//p&apos; $version_file)
+# Get the major version
+majorVersion=$(sed -n &apos;s/^majorVersion=//p&apos; $version_file)
+
+# Increment version and continue build
+# Check for changes in /web folder
+echo &quot;Check for changes in /web folder: git diff --quiet $GIT_PREVIOUS_SUCCESSFUL_COMMIT $GIT_COMMIT /web&quot;
+if git diff --quiet $GIT_PREVIOUS_SUCCESSFUL_COMMIT $GIT_COMMIT main/develop/module/builders/web; then
+    echo &quot;No changes in /web since last successful build&quot;
+else
+   echo &quot;Changes detected in /web. Artifact version incremented&quot;
+   echo &quot;Incrementing build version variable&quot;
+   # Increment version and continue build
+	minorVersion=$((minorVersion + 1))
+	majorVersion=$((majorVersion + 1))
+fi
+
+# Store the incremented version in a new file
+echo &quot;Writing incremented minor and major versions to temp file $version_temp_file&quot;
+echo -e &quot;minorVersion=$minorVersion\nmajorVersion=$majorVersion&quot; &gt; $version_temp_file</command>
+          <configuredLocalRules>
+            <jenkins.tasks.filters.impl.RetainVariablesLocalRule>
+              <variables>minorVersion majorVersion</variables>
+              <retainCharacteristicEnvVars>true</retainCharacteristicEnvVars>
+              <processVariablesHandling>RESET</processVariablesHandling>
+            </jenkins.tasks.filters.impl.RetainVariablesLocalRule>
+          </configuredLocalRules>
+        </hudson.tasks.Shell>
+        <EnvInjectBuilder plugin="envinject@2.908.v66a_774b_31d93">
+          <info>
+            <propertiesFilePath>main/develop/module/builders/web/version_temp.properties</propertiesFilePath>
+          </info>
+        </EnvInjectBuilder>
+        <hudson.plugins.gradle.Gradle plugin="gradle@2.8.2">
+          <switches></switches>
+          <tasks>-b main/develop/module/builders/build.gradle clean build -PenvDescription=RELEASE -PmajorVersion=$majorVersion -PminorVersion=$minorVersion</tasks>
+          <rootBuildScriptDir></rootBuildScriptDir>
+          <buildFile></buildFile>
+          <gradleName>Gradle</gradleName>
+          <useWrapper>false</useWrapper>
+          <makeExecutable>false</makeExecutable>
+          <useWorkspaceAsHome>false</useWorkspaceAsHome>
+          <wrapperLocation></wrapperLocation>
+          <passAllAsSystemProperties>false</passAllAsSystemProperties>
+          <projectProperties></projectProperties>
+          <passAllAsProjectProperties>false</passAllAsProjectProperties>
+        </hudson.plugins.gradle.Gradle>
+        <hudson.tasks.BatchFile>
+          <command>java -jar main/develop/module/builders/admin/build/libs/admin-1.0-SNAPSHOT.jar &quot;Hello World! This is my Gradle message.&quot;&#xd;
+copy &quot;main\develop\module\builders\web\build\libs\*.war&quot; &quot;main\develop\module\builders\web&quot;</command>
+          <configuredLocalRules/>
+        </hudson.tasks.BatchFile>
+        <hudson.tasks.Shell>
+          <command>#Change version in version.txt file and remove temp file
+version_file=&quot;main/develop/module/builders/web/version.properties&quot;
+version_temp_file=&quot;main/develop/module/builders/web/version_temp.properties&quot;
+mv $version_temp_file $version_file
+
+# Tag and push
+# Check for changes in /web folder
+echo &quot;Check for changes in /web folder: git diff --quiet $GIT_PREVIOUS_SUCCESSFUL_COMMIT $GIT_COMMIT /web&quot;
+if git diff --quiet $GIT_PREVIOUS_SUCCESSFUL_COMMIT $GIT_COMMIT main/develop/module/builders/web; then
+    echo &quot;No changes in /web since last successful build&quot;
+else
+   echo &quot;Changes detected in /web. Artifact version incremented&quot;
+   echo &quot;Create and push tags for latest commit.&quot;
+   git tag -a v$majorVersion.$minorVersion -m &quot;Version $majorVersion.$minorVersion build&quot;
+   git push origin v$majorVersion.$minorVersion
+fi</command>
+          <configuredLocalRules/>
+        </hudson.tasks.Shell>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>main/develop/module/builders/web/*.war</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+      <followSymlinks>false</followSymlinks>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.Mailer plugin="mailer@463.vedf8358e006b_">
+      <recipients></recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.26"/>
+  </buildWrappers>
+</project>
