@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = 'dockerhub-token'
+        KUBECONFIG_CREDENTIALS = 'kubeconfig-secret'
+    }
+
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    checkout scm
+                    def appImage = docker.build("dockeruser111111111/jgmp-test:${env.BUILD_ID}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
+                        appImage.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    kubernetesDeploy(credentialsId: "${KUBECONFIG_CREDENTIALS}", kubeconfig: '/var/jenkins_home/.kube/config', manifests: 'k8s-manifest.yaml')
+                }
+            }
+        }
+    }
+}
