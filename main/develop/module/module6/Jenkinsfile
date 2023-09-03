@@ -11,7 +11,8 @@ pipeline {
             steps {
                 script {
                     checkout scm
-                    def appImage = docker.build("dockeruser111111111/jgmp-test:${env.BUILD_ID}")
+                    def dockerfilePath = 'main/develop/module/module6/Dockerfile'
+                    def appImage = docker.build("dockeruser111111111/jgmp-test:${env.BUILD_ID}", "-f ${dockerfilePath} .")
                 }
             }
         }
