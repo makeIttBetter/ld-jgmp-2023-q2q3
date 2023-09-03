@@ -6,6 +6,7 @@ pipeline {
         KUBECONFIG_CREDENTIALS = 'kubeconfig-secret'
         DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${env.BUILD_ID}"
         NAMESPACE = 'minikube'
+        DEPLOYMENT_NAME = 'my-web-app'
     }
 
     stages {
