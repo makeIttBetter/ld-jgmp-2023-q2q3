@@ -5,6 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
         KUBECONFIG_CREDENTIALS = 'kubeconfig-secret'
         DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${env.BUILD_ID}"
+        NAMESPACE = 'minikube'
     }
 
     stages {
@@ -32,7 +33,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    kubernetesDeploy(manifests: 'main/develop/module/module6/k8s-manifest.yaml')
+                    sh """
+                      kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$IMAGE_NAME:$BUILD_NUMBER --namespace=$NAMESPACE
+                    """
                 }
             }
         }
