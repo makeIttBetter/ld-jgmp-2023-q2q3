@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                      kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$IMAGE_NAME:$BUILD_NUMBER --namespace=$NAMESPACE
+                      kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$DOCKER_IMAGE_NAME --namespace=$NAMESPACE
                     """
                 }
             }
