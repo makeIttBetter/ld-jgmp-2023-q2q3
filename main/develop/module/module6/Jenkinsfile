@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = 'dockerhub-token'
+        DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
         KUBECONFIG_CREDENTIALS = 'kubeconfig-secret'
     }
 
@@ -30,7 +30,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    kubernetesDeploy(credentialsId: "${KUBECONFIG_CREDENTIALS}", kubeconfig: '/var/jenkins_home/.kube/config', manifests: 'k8s-manifest.yaml')
+                    kubernetesDeploy(manifests: 'main/develop/module/module6/k8s-manifest.yaml')
                 }
             }
         }
