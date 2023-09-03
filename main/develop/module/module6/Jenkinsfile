@@ -6,8 +6,6 @@ pipeline {
         KUBECONFIG_CREDENTIALS = 'kubeconfig-secret'
     }
 
-    // Declare the variable at the top-level scope.
-    def appImage
 
     stages {
         stage('Build Docker Image') {
@@ -15,7 +13,8 @@ pipeline {
                 script {
                     checkout scm
                     def dockerfilePath = 'main/develop/module/module6/Dockerfile'
-                    appImage = docker.build("dockeruser111111111/jgmp-test:${env.BUILD_ID}", "-f ${dockerfilePath} .")
+                    def appImage = docker.build("dockeruser111111111/jgmp-test:${env.BUILD_ID}", "-f ${dockerfilePath} .")
+                    stash(name: 'appImageStash', includes: 'appImage')
                 }
             }
         }
@@ -23,6 +22,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
+                    unstash 'appImageStash'
                     docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
                         appImage.push("${env.BUILD_ID}")
                     }
