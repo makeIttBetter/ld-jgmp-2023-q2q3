@@ -4,8 +4,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
         KUBECONFIG_CREDENTIALS = 'kubeconfig-secret'
+        DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${env.BUILD_ID}"
     }
-
 
     stages {
         stage('Build Docker Image') {
@@ -13,8 +13,7 @@ pipeline {
                 script {
                     checkout scm
                     def dockerfilePath = 'main/develop/module/module6/Dockerfile'
-                    def appImage = docker.build("dockeruser111111111/jgmp-test:${env.BUILD_ID}", "-f ${dockerfilePath} .")
-                    stash(name: 'appImageStash', includes: 'appImage')
+                    def appImage = docker.build("${DOCKER_IMAGE_NAME}", "-f ${dockerfilePath} .")
                 }
             }
         }
@@ -22,7 +21,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    unstash 'appImageStash'
+                    def appImage = docker.image("${DOCKER_IMAGE_NAME}")
                     docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
                         appImage.push("${env.BUILD_ID}")
                     }
