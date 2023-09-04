@@ -40,7 +40,7 @@ pipeline {
 
                        kubectl create deployment %DEPLOYMENT_NAME% --image=nginx --namespace=%NAMESPACE% --dry-run=client -o yaml | powershell -Command "Get-Content -Path ('CONIN$') -Raw | ForEach-Object { $_ -replace 'nginx', '%DOCKER_IMAGE_NAME%' }" | kubectl apply -f -
 
-                       for /F "delims=" %%a in ('kubectl get deployment %DEPLOYMENT_NAME% -n %NAMESPACE% -o jsonpath="{.spec.template.spec.containers[0].name}"') do set CONTAINER_NAME=%%a
+                       for /F "delims=" %%a in ('kubectl get deployment %DEPLOYMENT_NAME% -n %NAMESPACE% -o jsonpath={"""}.spec.template.spec.containers[0].name{"""}') do set CONTAINER_NAME=%%a
 
                        kubectl set image deployment/%DEPLOYMENT_NAME% %CONTAINER_NAME%=%DOCKER_IMAGE_NAME% --namespace=%NAMESPACE%
                    '''
