@@ -1,0 +1,127 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.promoted__builds.JobPropertyImpl plugin="promoted-builds@892.vd6219fc0a_efb">
+      <activeProcessNames>
+        <string>QA</string>
+        <string>Prod</string>
+      </activeProcessNames>
+    </hudson.plugins.promoted__builds.JobPropertyImpl>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>BUILD_TOOL</name>
+          <description>Choose a tool to build the project</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Maven</string>
+              <string>Gradle</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.2.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://git.epam.com/kyrylo_levchenko/ld-jgmp-2023-q2q3.git</url>
+        <credentialsId>74d171a7-de98-4092-9772-c59d9d6a7e11</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/buildtools</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="empty-list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.TimerTrigger>
+      <spec>0 2 * * *</spec>
+    </hudson.triggers.TimerTrigger>
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.4.2">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.6"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition" plugin="run-condition@1.6">
+        <arg1>${BUILD_TOOL}</arg1>
+        <arg2>Maven</arg2>
+        <ignoreCase>false</ignoreCase>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.tasks.Maven>
+          <targets>-f main/develop/module/builders/pom.xml clean install</targets>
+          <mavenName>Maven</mavenName>
+          <usePrivateRepository>false</usePrivateRepository>
+          <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+          <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+          <injectBuildVariables>false</injectBuildVariables>
+        </hudson.tasks.Maven>
+        <hudson.tasks.BatchFile>
+          <command>java -jar main/develop/module/builders/admin/target/admin-1.0-SNAPSHOT.jar &quot;Hello World! This is my Maven message.&quot;&#xd;
+copy &quot;main\develop\module\builders\web\target\*.war&quot; &quot;main\develop\module\builders\web&quot;</command>
+          <configuredLocalRules/>
+        </hudson.tasks.BatchFile>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.4.2">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.6"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition" plugin="run-condition@1.6">
+        <arg1>${BUILD_TOOL}</arg1>
+        <arg2>Gradle</arg2>
+        <ignoreCase>false</ignoreCase>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.gradle.Gradle plugin="gradle@2.8.1">
+          <switches></switches>
+          <tasks>-b main/develop/module/builders/build.gradle clean build</tasks>
+          <rootBuildScriptDir></rootBuildScriptDir>
+          <buildFile></buildFile>
+          <gradleName>Gradle</gradleName>
+          <useWrapper>false</useWrapper>
+          <makeExecutable>false</makeExecutable>
+          <useWorkspaceAsHome>false</useWorkspaceAsHome>
+          <wrapperLocation></wrapperLocation>
+          <passAllAsSystemProperties>false</passAllAsSystemProperties>
+          <projectProperties></projectProperties>
+          <passAllAsProjectProperties>false</passAllAsProjectProperties>
+        </hudson.plugins.gradle.Gradle>
+        <hudson.tasks.BatchFile>
+          <command>java -jar main/develop/module/builders/admin/build/libs/admin-1.0-SNAPSHOT.jar &quot;Hello World! This is my Gradle message.&quot;&#xd;
+copy &quot;main\develop\module\builders\web\build\libs\*.war&quot; &quot;main\develop\module\builders\web&quot;</command>
+          <configuredLocalRules/>
+        </hudson.tasks.BatchFile>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>main/develop/module/builders/web/*.war</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+      <followSymlinks>false</followSymlinks>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.25"/>
+  </buildWrappers>
+</project>

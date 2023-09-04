@@ -1,0 +1,5 @@
+rootProject.name = 'module6.docker-kubernetes'
+include 'admin'
+include 'services'
+include 'utils'
+include 'web'
