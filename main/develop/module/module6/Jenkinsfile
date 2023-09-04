@@ -12,11 +12,8 @@ pipeline {
          stage('Prepare and Copy Artifacts') {
              steps {
                  script {
-                     // Clear the 'webapp' directory
-                     bat 'if exist webapp\\* del /Q webapp\\*'
-
                      // Copy artifacts from 'continuous' job
-                     copyArtifacts projectName: 'continuous', filter: 'main/develop/module/builders/web/*.war', target: 'main/develop/module/module6/web/'
+                     copyArtifacts projectName: 'continuous', filter: 'main/develop/module/builders/web/*.war'
                  }
              }
          }

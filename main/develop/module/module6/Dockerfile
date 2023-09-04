@@ -5,7 +5,7 @@ FROM tomcat:9-jdk11
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy the .war from the Jenkins workspace into the Tomcat webapps directory
-COPY main/develop/module/module6/web/*.war /usr/local/tomcat/webapps/ROOT.war
+COPY main/develop/module/builders/web/*.war /usr/local/tomcat/webapps/ROOT.war
 
 # Expose port 8080 for the Tomcat server
 EXPOSE 8080
