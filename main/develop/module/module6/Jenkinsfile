@@ -9,6 +9,18 @@ pipeline {
     }
 
     stages {
+         stage('Prepare and Copy Artifacts') {
+             steps {
+                 script {
+                     // Clear the 'webapp' directory
+                     bat 'if exist webapp\\* del /Q webapp\\*'
+
+                     // Copy artifacts from 'continuous' job
+                     copyArtifacts projectName: 'continuous', filter: 'main/develop/module/builders/web/*.war', target: 'webapp'
+                 }
+             }
+         }
+
         stage('Build Docker Image') {
             steps {
                 script {
