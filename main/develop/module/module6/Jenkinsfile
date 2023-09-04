@@ -37,7 +37,7 @@ pipeline {
                        set KUBECONFIG=main/develop/module/module6/kube-config
                        kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
                        kubectl create deployment %DEPLOYMENT_NAME% --image=nginx --namespace=%NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
-                       kubectl set image deployment/%DEPLOYMENT_NAME% %DEPLOYMENT_NAME%=%DOCKER_IMAGE_NAME% --namespace=%NAMESPACE%
+                       kubectl set image deployment/%DEPLOYMENT_NAME% nginx=%DOCKER_IMAGE_NAME% --namespace=%NAMESPACE%
                    """
                 }
             }
