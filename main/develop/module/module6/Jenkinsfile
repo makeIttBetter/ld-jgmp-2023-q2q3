@@ -16,7 +16,7 @@ pipeline {
                      bat 'if exist webapp\\* del /Q webapp\\*'
 
                      // Copy artifacts from 'continuous' job
-                     copyArtifacts projectName: 'continuous', filter: 'main/develop/module/builders/web/*.war', target: 'webapp'
+                     copyArtifacts projectName: 'continuous', filter: 'main/develop/module/builders/web/*.war', target: 'main/develop/module/module6/web/'
                  }
              }
          }
