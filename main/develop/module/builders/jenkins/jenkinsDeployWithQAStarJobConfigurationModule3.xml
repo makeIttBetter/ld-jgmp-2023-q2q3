@@ -1,0 +1,80 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.plugins.promoted__builds.parameters.PromotedBuildParameterDefinition plugin="promoted-builds@892.vd6219fc0a_efb">
+          <name>buildVersion</name>
+          <projectName>continuous</projectName>
+          <promotionProcessName>QA</promotionProcessName>
+        </hudson.plugins.promoted__builds.parameters.PromotedBuildParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@453.vcdb_a_c5c99890">
+      <source class="hudson.plugins.groovy.StringSystemScriptSource">
+        <script plugin="script-security@1251.vfe552ed55f8d">
+          <script>import hudson.model.*
+
+def getBuild = { -&gt;
+    Thread.currentThread()?.executable
+}
+
+def setEnv = { key, value -&gt;
+    def build = getBuild()
+    def e = new hudson.EnvVars()
+    e.put(key, value)
+    build.environments.add(Environment.create(e))
+}
+
+def getRunId = { -&gt;
+    def build = getBuild()
+    def parameters = build?.actions.find { it instanceof ParametersAction }?.parameters
+    parameters[0].runId
+}
+def version = getRunId().split(&apos;#&apos;)[1]
+
+setEnv(&quot;BUILD_VESRION&quot;, version)</script>
+          <sandbox>false</sandbox>
+        </script>
+      </source>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@705.v5295cffec284">
+      <project>continuous</project>
+      <filter>main/develop/module/builders/web/*.war</filter>
+      <target></target>
+      <includeBuildNumberInTargetPath>false</includeBuildNumberInTargetPath>
+      <excludes></excludes>
+      <selector class="hudson.plugins.copyartifact.SpecificBuildSelector">
+        <buildNumber>${BUILD_VESRION}</buildNumber>
+      </selector>
+      <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+    </hudson.plugins.copyartifact.CopyArtifact>
+  </builders>
+  <publishers>
+    <hudson.plugins.deploy.DeployPublisher plugin="deploy@1.16">
+      <adapters>
+        <hudson.plugins.deploy.tomcat.Tomcat8xAdapter>
+          <credentialsId>Tomcat</credentialsId>
+          <url>http://localhost:8080/</url>
+          <path></path>
+        </hudson.plugins.deploy.tomcat.Tomcat8xAdapter>
+      </adapters>
+      <contextPath>/web</contextPath>
+      <war>main/develop/module/builders/web/*.war</war>
+      <onFailure>false</onFailure>
+    </hudson.plugins.deploy.DeployPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>
