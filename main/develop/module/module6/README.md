@@ -178,13 +178,13 @@ Creating a Service: Use the kubectl command to create a service. A Kubernetes se
 
 Code Example:
 ```sh
-kubectl expose deployment my-web-app --type=LoadBalancer --name=my-service --namespace=module6
+kubectl expose deployment my-web-app --type=LoadBalancer --name=my-web-app-service --namespace=module6
 ```
 Obtaining the URL: After the service is created, you can obtain the URL to access your application by describing the service and extracting the IP and port details.
 
 Code Example:
 ```sh
-kubectl get svc my-service -n module6 -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+minikube service my-web-app-service --namespace=module6 --url
 ```
 Explanation: This command retrieves the IP address of the service named "my-service" in the "module6" namespace. You can use this IP along with the service port to access your application.
 
