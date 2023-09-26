@@ -5,7 +5,7 @@ pipeline {
         DEPLOYMENT_NAME = 'spring-petclinic'
         NAMESPACE = 'module7'
         DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
-        DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${NAMESPACE}${env.BUILD_ID}"
+        DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:module7-${env.BUILD_ID}"
     }
 
     stages {
