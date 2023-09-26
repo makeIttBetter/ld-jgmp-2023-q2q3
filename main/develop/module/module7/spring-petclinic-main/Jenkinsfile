@@ -13,7 +13,7 @@ pipeline {
              steps {
                  script {
                      // Copy artifacts from 'continuous_m7' job
-                     copyArtifacts projectName: 'continuous_m7', filter: 'main/develop/module/module7/spring-petclinic-main/target/*.jar'
+                     copyArtifacts projectName: 'continuous_m7', filter: 'main/develop/module/module7/spring-petclinic-main/*.jar'
                  }
              }
          }
