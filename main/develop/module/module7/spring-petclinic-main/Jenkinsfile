@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    environment {
+        DEPLOYMENT_NAME = 'spring-petclinic'
+        NAMESPACE = 'module7'
+        DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
+        DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${NAMESPACE}${env.BUILD_ID}"
+    }
+
+    stages {
+         stage('Prepare and Copy Artifacts') {
+             steps {
+                 script {
+                     // Copy artifacts from 'continuous_m7' job
+                     copyArtifacts projectName: 'continuous_m7', filter: 'main/develop/module/module7/spring-petclinic-main/target/*.jar'
+                 }
+             }
+         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    checkout scm
+                    def dockerfilePath = 'main/develop/module/module7/spring-petclinic-main/Dockerfile'
+                    def appImage = docker.build("${DOCKER_IMAGE_NAME}", "-f ${dockerfilePath} .")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    def appImage = docker.image("${DOCKER_IMAGE_NAME}")
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
+                        appImage.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                   bat """
+                       set KUBECONFIG=main/develop/module/module7/spring-petclinic-main/kube-config
+                       kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+                       kubectl create deployment %DEPLOYMENT_NAME% --image=nginx --namespace=%NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+                       kubectl set image deployment/%DEPLOYMENT_NAME% nginx=%DOCKER_IMAGE_NAME% --namespace=%NAMESPACE%
+                   """
+                }
+            }
+        }
+    }
+}
