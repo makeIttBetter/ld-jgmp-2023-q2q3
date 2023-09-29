@@ -60,13 +60,9 @@ pipeline {
                     bat """
                         set KUBECONFIG=main/develop/module/module7/spring-petclinic-main/kube-config
                         kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
-                    """
 
-                    // Update the chart dependencies
-                    bat "helm dependency update %CHART_PATH%"
+                        helm dependency update %CHART_PATH%"
 
-                    // Install/Upgrade the release with Helm
-                    bat """
                         helm upgrade --install %RELEASE_NAME% %CHART_PATH% ^
                         --namespace %NAMESPACE% ^
                         --set image.repository=%DOCKER_IMAGE_NAME% ^
