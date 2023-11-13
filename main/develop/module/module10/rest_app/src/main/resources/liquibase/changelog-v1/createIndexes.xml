@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Adding unique constraint to prevent duplicate event entries based on title and date -->
+    <changeSet id="add unique title-date constraint" author="author">
+        <comment>Ensure that the combination of title and date for events is unique to avoid duplicate events.</comment>
+        <addUniqueConstraint
+                constraintName="unique_title_date"
+                tableName="event"
+                columnNames="title,date"/>
+    </changeSet>
+
+    <!-- Adding unique constraint to prevent booking multiple tickets for the same place at an event -->
+    <changeSet id="add unique event-place constraint" author="author">
+        <comment>Ensure each place at an event is unique to prevent double booking.</comment>
+        <addUniqueConstraint
+                constraintName="unique_event_place"
+                tableName="ticket"
+                columnNames="event_id,place"/>
+    </changeSet>
+
+    <!-- Adding unique constraint to the user_role table to prevent duplicate role assignments for users -->
+    <changeSet id="add unique user-role relation constraint" author="author">
+        <comment>Prevent assigning the same role to a user more than once.</comment>
+        <addUniqueConstraint
+                tableName="user_role"
+                columnNames="user_id, role_id"
+                constraintName="uk_user_role"/>
+    </changeSet>
+
+    <!-- Adding foreign key from the ticket table to the user table to maintain referential integrity -->
+    <changeSet id="add fk-ticket-user relation key" author="author">
+        <comment>Link each ticket to a user to maintain referential integrity.</comment>
+        <addForeignKeyConstraint
+                baseTableName="ticket"
+                baseColumnNames="user_id"
+                constraintName="fk_ticket_user"
+                referencedTableName="user"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- Adding foreign key from the ticket table to the event table to maintain referential integrity -->
+    <changeSet id="add fk-ticket-event relation key" author="author">
+        <comment>Link each ticket to an event to maintain referential integrity.</comment>
+        <addForeignKeyConstraint
+                baseTableName="ticket"
+                baseColumnNames="event_id"
+                constraintName="fk_ticket_event"
+                referencedTableName="event"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- Creating an index on the user's email field to speed up email-based searches -->
+    <changeSet id="create index user-email" author="author">
+        <comment>Improve the performance of queries filtering by the user's username.</comment>
+        <createIndex indexName="user_username" tableName="user" unique="false">
+            <column name="username"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Creating an index on the event's title field to speed up title-based searches -->
+    <changeSet id="create index event-title" author="author">
+        <comment>Improve the performance of queries filtering by the event's title.</comment>
+        <createIndex indexName="event_title" tableName="event" unique="false">
+            <column name="title"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Creating an index on the ticket's user_id field to speed up user-based ticket searches -->
+    <changeSet id="create index ticket-user-id" author="author">
+        <comment>Improve the performance of queries filtering tickets by user.</comment>
+        <createIndex indexName="ticket_user_id" tableName="ticket" unique="false">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Creating an index on the ticket's event_id field to speed up event-based ticket searches -->
+    <changeSet id="20231024-create-index-ticket-event-id" author="author">
+        <comment>Improve the performance of queries filtering tickets by event.</comment>
+        <createIndex indexName="ticket_event_id" tableName="ticket" unique="false">
+            <column name="event_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
