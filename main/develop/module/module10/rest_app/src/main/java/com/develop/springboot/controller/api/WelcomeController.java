@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * WelcomeController class is a REST controller for authentication.
+ * It provides authentication operations with JWT token.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -27,6 +31,12 @@ public class WelcomeController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * This method authenticates user and generates JWT token.
+     *
+     * @param authRequest {@link AuthRequest} authentication request
+     * @return {@link ResponseEntity} with {@link AuthenticationResponse} authentication response
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<?> generateToken(@RequestBody AuthRequest authRequest) {
         try {

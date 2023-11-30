@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ApiTicketController class is a REST controller for Ticket entity.
+ * It provides CRUD operations for Ticket entity.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/tickets")

@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * UserServiceImpl class is a service for customizing user service.
+ * It provides methods for saving, finding and deleting users.
+ * <p> It implements Service interface, which means it will be used for saving, finding and deleting users.
+ */
 @Slf4j
 @org.springframework.stereotype.Service
 public class UserServiceImpl implements Service<User, UUID> {

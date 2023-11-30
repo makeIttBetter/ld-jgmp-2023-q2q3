@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * RoleServiceImpl class is a service for customizing role service.
+ * It provides methods for saving, finding and deleting roles.
+ * <p> It implements Service interface, which means it will be used for saving, finding and deleting roles.
+ */
 @Slf4j
 @org.springframework.stereotype.Service
 public class RoleServiceImpl implements Service<Role, UUID> { // Assuming you have a generic Service interface.

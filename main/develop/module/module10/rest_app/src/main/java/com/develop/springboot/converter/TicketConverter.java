@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+/**
+ * TicketConverter class is a converter for Ticket entity.
+ * It provides methods for converting Ticket entity to TicketDTO and vice versa.
+ */
 @Slf4j
 @Component
 public class TicketConverter {

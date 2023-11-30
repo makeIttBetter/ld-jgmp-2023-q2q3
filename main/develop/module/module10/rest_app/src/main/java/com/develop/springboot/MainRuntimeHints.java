@@ -20,6 +20,12 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 
 
+/**
+ * MainRuntimeHints class is a runtime hints registrar.
+ * It provides methods for registering runtime hints.
+ * <p> It implements RuntimeHintsRegistrar interface, which means it will be used for registering runtime hints.
+ * <note> Currently this class is not used in the project.
+ */
 public class MainRuntimeHints implements RuntimeHintsRegistrar {
 
     @Override

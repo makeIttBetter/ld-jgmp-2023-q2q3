@@ -12,6 +12,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * UserConverter class is a converter for User entity.
+ * It provides methods for converting User entity to UserDTO and vice versa.
+ */
 @Slf4j
 @Component
 public class UserConverter {

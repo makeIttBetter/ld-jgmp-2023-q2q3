@@ -20,6 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+/**
+ * CustomOAuth2UserService class is a service for customizing OAuth2 user service.
+ * It provides methods for loading OAuth2 user and mapping roles to authorities.
+ * <p> It extends DefaultOAuth2UserService class, which means it will be used for loading OAuth2 user.
+ */
 @Slf4j
 @Service
 @Lazy
@@ -31,14 +36,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Loads OAuth2 user from the given OAuth2 user request.
+     * It is used for loading OAuth2 user and mapping roles to authorities.
+     * Authorities is combined from OAuth2 user and user from DataBase.
+     *
+     * @param userRequest the OAuth2 user request to load user from
+     * @return the OAuth2 user with combined authorities
+     * @throws OAuth2AuthenticationException in case of an OAuth2 authentication exception
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("Loading user for OAuth2 request");
         OAuth2User oauth2User = super.loadUser(userRequest);
 
-//        log.info("oAuth2 User: " + oauth2User);
-
-        String email = oauth2User.getAttribute("login");
+        String email = oauth2User.getAttribute("email");
         log.debug("Received email attribute from OAuth2User: {}", email);
 
         User user = userRepository.findByUsername(email);
@@ -68,6 +80,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return combinedUser;
     }
 
+    /**
+     * Maps roles to authorities.
+     * It is used for mapping roles to authorities.
+     *
+     * @param roles the roles to map
+     * @return the authorities mapped from roles
+     */
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getConstantCode()))

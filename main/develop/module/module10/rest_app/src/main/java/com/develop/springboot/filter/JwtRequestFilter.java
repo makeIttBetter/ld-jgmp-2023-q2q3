@@ -1,7 +1,7 @@
 package com.develop.springboot.filter;
 
-import com.develop.springboot.util.JwtUtil;
 import com.develop.springboot.service.security.UserDetailsServiceImpl;
+import com.develop.springboot.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,16 +17,33 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * JwtRequestFilter class is a filter for JWT requests.
+ * It provides methods for filtering requests and extracting JWT token.
+ * It is used for authenticating users using JWT.
+ * <p> It extends OncePerRequestFilter class, which means it will be executed once per each request.
+ */
 @Slf4j
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-    
+
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
 
+    /**
+     * Filters incoming requests to extract and validate JWT tokens.
+     * It authenticates the user if a valid JWT token is present in the Authorization header.
+     * The filter is applied to every HTTP request but performs authentication only for requests with JWT tokens.
+     *
+     * @param request     the HTTP request
+     * @param response    the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException in case of a servlet exception
+     * @throws IOException      in case of an I/O exception
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * TicketServiceImpl class is a service for customizing ticket service.
+ * It provides methods for saving, finding and deleting tickets.
+ * <p> It implements Service interface, which means it will be used for saving, finding and deleting tickets.
+ */
 @Slf4j
 @org.springframework.stereotype.Service
 public class TicketServiceImpl implements Service<Ticket, UUID> {

@@ -5,6 +5,10 @@ import com.develop.springboot.model.entities.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+/**
+ * EventConverter class is a converter for Event entity.
+ * It provides methods for converting Event entity to EventDTO and vice versa.
+ */
 @Slf4j
 @Component
 public class EventConverter {

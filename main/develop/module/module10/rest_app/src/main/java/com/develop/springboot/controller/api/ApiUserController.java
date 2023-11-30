@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ApiUserController class is a REST controller for User entity.
+ * It provides CRUD operations for User entity.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/users")

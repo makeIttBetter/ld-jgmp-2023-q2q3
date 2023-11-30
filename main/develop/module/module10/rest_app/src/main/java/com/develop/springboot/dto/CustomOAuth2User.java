@@ -8,6 +8,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * CustomOAuth2User class is a DTO for OAuth2User.
+ * It provides methods for getting attributes, authorities and name.
+ * It is used for adding additional authorities to OAuth2User.
+ *
+ * @see com.develop.springboot.service.security.CustomOAuth2UserService
+ */
 public class CustomOAuth2User implements OAuth2User {
 
     private final OAuth2User oauth2User;

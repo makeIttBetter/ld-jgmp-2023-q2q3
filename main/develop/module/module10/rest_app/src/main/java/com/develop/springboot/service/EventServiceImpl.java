@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * EventServiceImpl class is a service for customizing event service.
+ * It provides methods for saving, finding and deleting events.
+ * <p> It implements Service interface, which means it will be used for saving, finding and deleting events.
+ */
 @Slf4j
 @org.springframework.stereotype.Service
 public class EventServiceImpl implements Service<Event, UUID> {

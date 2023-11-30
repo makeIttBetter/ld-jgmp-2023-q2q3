@@ -6,6 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * ViewsController class is a controller for views testing.
+ * It provides endpoints for different views.
+ */
 @Slf4j
 @Controller
 @RequestMapping("/views")
@@ -16,6 +20,7 @@ public class ViewsController {
         model.addAttribute("message", "This is a test page!");
         return "test";
     }
+
 
     @GetMapping("/testError")
     public String throwError() {

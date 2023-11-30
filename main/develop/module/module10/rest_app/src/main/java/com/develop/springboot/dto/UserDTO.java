@@ -6,6 +6,11 @@ import lombok.EqualsAndHashCode;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * DTO for user.
+ *
+ * @see com.develop.springboot.controller.api.ApiUserController
+ */
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class UserDTO {
