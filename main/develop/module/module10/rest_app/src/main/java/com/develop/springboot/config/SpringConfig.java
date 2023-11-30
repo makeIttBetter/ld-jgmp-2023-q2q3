@@ -18,14 +18,12 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @Configuration
 @ComponentScan(basePackages = {"com.develop.springboot"}) // add other necessary packages
 @EnableTransactionManagement
 @EnableAutoConfiguration
-//@EnableSwagger2
 @EnableJpaRepositories(basePackages = {"com.develop.springboot.model.repository"})
 public class SpringConfig {
 

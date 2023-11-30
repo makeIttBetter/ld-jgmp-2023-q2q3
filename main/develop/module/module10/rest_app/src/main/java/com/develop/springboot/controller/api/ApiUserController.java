@@ -3,7 +3,6 @@ package com.develop.springboot.controller.api;
 import com.develop.springboot.controller.CrudController;
 import com.develop.springboot.dto.UserDTO;
 import com.develop.springboot.facade.BookingFacade;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

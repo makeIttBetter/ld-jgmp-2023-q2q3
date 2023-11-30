@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>module10.rest-app</name>
-    <description>Spring Boot project for Module 9</description>
+    <description>Spring Boot project for Module 10</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -25,7 +25,7 @@
         <spring-security-jwt.version>1.1.1.RELEASE</spring-security-jwt.version> <!-- Adjust if necessary -->
         <liquibase.version>4.23.0</liquibase.version> <!-- Adjust if necessary -->
         <jjwt.version>0.11.5</jjwt.version> <!-- Adjust if necessary -->
-        <!-- Other properties... -->
+        <springdoc-openapi-ui.version>2.2.0</springdoc-openapi-ui.version> <!-- Use the latest version -->
     </properties>
 
     <dependencies>
@@ -36,11 +36,23 @@
             <version>2.1.1</version>
         </dependency>
 
-        <!-- Spring Boot Dependencies -->
+        <!-- ANALYTICS -->
+        <!-- Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- Actuator -->
+        <!-- Prometheus -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <!-- Prometheus -->
+        <!-- ANALYTICS -->
+
+
+        <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -65,24 +77,48 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Spring Boot Dependencies -->
+
 
         <!--        SWAGGER-->
+        <!--        Works with Spring Boot 3.0      -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--        Works with Spring Boot 3.0      -->
+
+        <!--        Works with Spring Boot 2.0      -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springdoc</groupId>-->
+        <!--            <artifactId>springdoc-openapi-ui</artifactId>-->
+        <!--            <version>1.7.0</version>-->
+        <!--        </dependency>-->
+        <!--        Works with Spring Boot 2.0      -->
+
+
+        <!--        Works with in Other Cases      -->
+        <!--        <dependency>-->
+        <!--            <groupId>io.springfox</groupId>-->
+        <!--            <artifactId>springfox-swagger2</artifactId>-->
+        <!--            <version>2.9.2</version> &lt;!&ndash; Use a compatible version &ndash;&gt;-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>io.springfox</groupId>-->
+        <!--            <artifactId>springfox-swagger-ui</artifactId>-->
+        <!--            <version>2.9.2</version> &lt;!&ndash; Use a compatible version &ndash;&gt;-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>javax.servlet</groupId>-->
+        <!--            <artifactId>javax.servlet-api</artifactId>-->
+        <!--            <version>4.0.1</version>-->
+        <!--            <scope>provided</scope>-->
+        <!--        </dependency>-->
+        <!--        Works with in Other Cases      -->
+
+
         <!--        SWAGGER-->
 
         <!--thymeleaf-->
@@ -92,7 +128,7 @@
         </dependency>
         <!--thymeleaf-->
 
-        <!-- For creating JWT -->
+        <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -110,6 +146,7 @@
             <scope>runtime</scope>
             <version>${jjwt.version}</version>
         </dependency>
+        <!-- JWT -->
 
 
         <!-- Lombok Dependency -->
@@ -119,6 +156,7 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Lombok Dependency -->
 
         <!-- H2 Database for testing and development -->
         <dependency>
@@ -126,6 +164,7 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- H2 Database for testing and development -->
 
         <!-- Liquibase for database migrations -->
         <dependency>
@@ -133,6 +172,7 @@
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
         </dependency>
+        <!-- Liquibase for database migrations -->
 
         <!-- Spring Boot Test Starter -->
         <dependency>
@@ -145,6 +185,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Spring Boot Test Starter -->
 
         <!-- If you use Spock for testing -->
         <dependency>
