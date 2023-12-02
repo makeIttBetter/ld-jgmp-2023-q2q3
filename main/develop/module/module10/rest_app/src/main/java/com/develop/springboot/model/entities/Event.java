@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,5 +32,7 @@ public class Event extends Model {
     @EqualsAndHashCode.Include
     private LocalDateTime date;
 
+    @Column(nullable = false)
+    private BigDecimal price;
 
 }

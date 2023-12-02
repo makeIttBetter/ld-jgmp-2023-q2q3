@@ -3,6 +3,7 @@ package com.develop.springboot.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,4 +20,5 @@ public class EventDTO {
     private String title;
     @EqualsAndHashCode.Include
     private LocalDateTime date;
+    private BigDecimal price;
 }

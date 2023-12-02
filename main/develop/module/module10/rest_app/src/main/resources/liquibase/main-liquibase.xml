@@ -11,6 +11,9 @@
     <include file="liquibase/changelog-v1/createSchema.xml"/>
     <include file="liquibase/changelog-v1/createIndexes.xml"/>
 
+    <!--    release 2.0-->
+    <include file="liquibase/changelog-v2/addColumn.xml"/>
+
     <!--    data load-->
     <include file="liquibase/changelog-testData/loadTestData.xml"/>
 

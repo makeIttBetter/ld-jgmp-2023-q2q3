@@ -19,6 +19,7 @@ public class EventConverter {
         dto.setId(event.getId());
         dto.setTitle(event.getTitle());
         dto.setDate(event.getDate());
+        dto.setPrice(event.getPrice());
         return dto;
     }
 
@@ -28,6 +29,7 @@ public class EventConverter {
         event.setId(dto.getId());
         event.setTitle(dto.getTitle());
         event.setDate(dto.getDate());
+        event.setPrice(dto.getPrice());
         return event;
     }
 }
