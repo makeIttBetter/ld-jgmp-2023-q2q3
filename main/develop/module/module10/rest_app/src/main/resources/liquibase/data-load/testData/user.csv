@@ -1,6 +1,6 @@
 id,username,password,name,email
-f47ac10b-58cc-4372-a567-0e02b2c3d479,johndoe,$2a$10$jdB/y6UdJm2Q2i90d0vVj.ftpt2aDrxU.yKoBDnOEEKty4LFpppKe,John Doe,john.doe@example.com
-e47ac10b-58cc-4372-a567-0e02b2c3d480,janesmith,$2a$10$to1dB.uNQ9eWjXKtTl2D4.SIlnSemPadgOXlFQwvdyFz0SJ94Za1C,Jane Smith,jane.smith@example.com
-d47ac10b-58cc-4372-a567-0e02b2c3d481,bobalice,$2a$10$saOdIr4zAQpd51HJOzjFjOmszH1gDSsD66RO4kGECtn8AKzuevrgC,Bob Alice,bob.alice@example.com
-c47ac10b-58cc-4372-a567-0e02b2c3d482,evecharlie,$2a$10$vfOJvce8HlEXndeCRqaQ.unPQ6SiINreGEUlVaPAGgWpAJbrY5AgK,Eve Charlie,eve.charlie@example.com
-c48ac10b-58cc-4372-a567-0e02b2c3d482,makeIttBetter,$2a$10$vfOJvce8HlEXndeCRqaQ.unPQ6SiINreGEUlVaPAGgWpAJbrY5AgK,Kyrylo,kyrylo_levchenko@epam.commm
+f47ac10b-58cc-4372-a567-0e02b2c3d479,johndoe,$2a$10$MAxeZkbiDsfdvpFzTBYY8OK4S89GZXXj7qI6t2V2RmN.0HM0eFryG,John Doe,john.doe@example.com
+e47ac10b-58cc-4372-a567-0e02b2c3d480,janesmith,$2a$10$MAxeZkbiDsfdvpFzTBYY8OK4S89GZXXj7qI6t2V2RmN.0HM0eFryG,Jane Smith,jane.smith@example.com
+d47ac10b-58cc-4372-a567-0e02b2c3d481,bobalice,$2a$10$MAxeZkbiDsfdvpFzTBYY8OK4S89GZXXj7qI6t2V2RmN.0HM0eFryG,Bob Alice,bob.alice@example.com
+c47ac10b-58cc-4372-a567-0e02b2c3d482,evecharlie,$2a$10$MAxeZkbiDsfdvpFzTBYY8OK4S89GZXXj7qI6t2V2RmN.0HM0eFryG,Eve Charlie,eve.charlie@example.com
+c48ac10b-58cc-4372-a567-0e02b2c3d482,makeIttBetter,$2a$10$MAxeZkbiDsfdvpFzTBYY8OK4S89GZXXj7qI6t2V2RmN.0HM0eFryG,Kyrylo,kyrylo_levchenko@epam.commm

@@ -1,6 +1,7 @@
-package com.develop.springboot.config;
+package com.develop.springboot.resolver;
 
 
+import io.micrometer.core.annotation.Counted;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class CustomHandlerExceptionResolver implements HandlerExceptionResolver 
      * @param ex       the exception that got thrown during handler execution
      * @return a corresponding {@link ModelAndView} to forward to, or {@code null}
      */
+    @Counted(value = "exception.count", description = "Counting how many times the exception has been caught")
     @Override
     public ModelAndView resolveException(HttpServletRequest request,
                                          HttpServletResponse response,

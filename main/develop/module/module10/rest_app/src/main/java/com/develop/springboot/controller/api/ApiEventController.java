@@ -3,6 +3,7 @@ package com.develop.springboot.controller.api;
 import com.develop.springboot.controller.CrudController;
 import com.develop.springboot.dto.EventDTO;
 import com.develop.springboot.facade.BookingFacade;
+import io.micrometer.core.annotation.Counted;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ public class ApiEventController implements CrudController<EventDTO, UUID> {
         });
     }
 
+    @Counted(value = "event.getAll.count", description = "Counting how many times the getAll method has been invoked")
     @Override
     public ResponseEntity<List<EventDTO>> getAll() {
         log.info("Fetching all Events");

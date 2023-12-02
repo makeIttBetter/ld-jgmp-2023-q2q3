@@ -1,5 +1,7 @@
 package com.develop.springboot.controller;
 
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.annotation.TimedSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/views")
 public class ViewsController {
 
+    @Timed
     @GetMapping("/test")
     public String showTestPage(Model model) {
         model.addAttribute("message", "This is a test page!");
@@ -22,6 +25,7 @@ public class ViewsController {
     }
 
 
+    @Timed
     @GetMapping("/testError")
     public String throwError() {
         throw new RuntimeException("This is a test error!");

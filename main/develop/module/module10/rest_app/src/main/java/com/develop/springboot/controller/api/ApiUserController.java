@@ -3,6 +3,8 @@ package com.develop.springboot.controller.api;
 import com.develop.springboot.controller.CrudController;
 import com.develop.springboot.dto.UserDTO;
 import com.develop.springboot.facade.BookingFacade;
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,6 @@ public class ApiUserController implements CrudController<UserDTO, UUID> {
     private BookingFacade bookingFacade;
 
     @Override
-//    @ApiOperation(value = "Create new User", notes = "Creates new User with given data")
     public ResponseEntity<UserDTO> create(UserDTO userDTO) {
         log.info("Creating new User: {}", userDTO);
         bookingFacade.saveUser(userDTO);
@@ -47,6 +48,7 @@ public class ApiUserController implements CrudController<UserDTO, UUID> {
         });
     }
 
+    @Counted(value = "user.getAll.count", description = "Counting how many times the getAll method has been invoked")
     @Override
     public ResponseEntity<List<UserDTO>> getAll() {
         log.info("Fetching all Users");

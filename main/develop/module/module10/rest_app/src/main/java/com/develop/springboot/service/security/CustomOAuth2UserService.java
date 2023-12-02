@@ -39,7 +39,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     /**
      * Loads OAuth2 user from the given OAuth2 user request.
      * It is used for loading OAuth2 user and mapping roles to authorities.
-     * Authorities is combined from OAuth2 user and user from DataBase.
+     * Authorities are combined from OAuth2 user and user from DataBase.
      *
      * @param userRequest the OAuth2 user request to load user from
      * @return the OAuth2 user with combined authorities

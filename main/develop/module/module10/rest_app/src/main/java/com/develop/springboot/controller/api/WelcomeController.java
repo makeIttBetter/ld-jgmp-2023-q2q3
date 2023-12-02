@@ -4,6 +4,7 @@ import com.develop.springboot.dto.AuthRequest;
 import com.develop.springboot.dto.AuthenticationResponse;
 import com.develop.springboot.service.security.UserDetailsServiceImpl;
 import com.develop.springboot.util.JwtUtil;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ public class WelcomeController {
      * @param authRequest {@link AuthRequest} authentication request
      * @return {@link ResponseEntity} with {@link AuthenticationResponse} authentication response
      */
+    @Timed(value = "generateToken.time", description = "Time taken to generate token")
     @PostMapping("/authenticate")
     public ResponseEntity<?> generateToken(@RequestBody AuthRequest authRequest) {
         try {
