@@ -1,0 +1,5 @@
+replicaCount: 1
+image:
+  repository: dockeruser111111111/jgmp-test
+  tag: spring-petclinic-8
+  pullPolicy: Always
