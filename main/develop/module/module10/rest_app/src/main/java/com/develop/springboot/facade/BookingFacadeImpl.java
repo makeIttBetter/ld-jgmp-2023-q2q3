@@ -19,6 +19,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * BookingFacadeImpl class is an implementation of BookingFacade interface.
+ * It provides methods for saving, finding and deleting users, events and tickets.
+ * Uses DTOs for data transfer.
+ * Uses UUID for identifying entities.
+ * Uses Optional for returning entities.
+ */
 @Slf4j
 @Component
 public class BookingFacadeImpl implements BookingFacade {

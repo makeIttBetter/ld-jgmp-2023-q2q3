@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ImportRuntimeHints;
  * <p> It is annotated with @ImportRuntimeHints, which means it will be used for importing runtime hints from MainRuntimeHints class.
  */
 @SpringBootApplication
-@ImportRuntimeHints(MainRuntimeHints.class)
+//@ImportRuntimeHints(MainRuntimeHints.class)
 public class MainApplication {
     public static void main(String[] args) {
         SpringApplication.run(MainApplication.class, args);

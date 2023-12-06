@@ -50,7 +50,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("Loading user for OAuth2 request");
         OAuth2User oauth2User = super.loadUser(userRequest);
 
-        String email = oauth2User.getAttribute("email");
+        String email = oauth2User.getAttribute("login");
         log.debug("Received email attribute from OAuth2User: {}", email);
 
         User user = userRepository.findByUsername(email);

@@ -1,6 +1,9 @@
 package com.develop.springboot.config;
 
 
+import io.micrometer.core.aop.CountedAspect;
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -97,6 +100,30 @@ public class SpringConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    /**
+     * This method configures a timed aspect.
+     * Used to measure the time metrics of methods execution for Prometheus.
+     *
+     * @param registry - {@link MeterRegistry} object to configure timed aspect
+     * @return {@link TimedAspect} configured timed aspect
+     */
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
+    }
+
+    /**
+     * This method configures a counted aspect.
+     * Used to measure the count metrics of methods execution for Prometheus.
+     *
+     * @param registry - {@link MeterRegistry} object to configure counted aspect
+     * @return {@link CountedAspect} configured counted aspect
+     */
+    @Bean
+    public CountedAspect countedAspect(MeterRegistry registry) {
+        return new CountedAspect(registry);
     }
 
 }
