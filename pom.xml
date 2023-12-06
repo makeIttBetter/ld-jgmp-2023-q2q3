@@ -21,6 +21,7 @@
         <module>main/develop/module/database</module>
         <module>main/develop/module/dbmigration</module>
         <module>main/develop/module/builders</module>
+        <module>main/develop/module/module8</module>
         <module>main/develop/module/module9</module>
     </modules>
 
