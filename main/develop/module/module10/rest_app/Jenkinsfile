@@ -25,6 +25,7 @@ pipeline {
             steps {
                 script {
                     checkout scm
+                    def dockerfilePath = 'main/develop/module/module10/rest_app/Dockerfile'
                     def appImage = docker.build("${DOCKER_IMAGE_NAME}", "-f ${dockerfilePath} .")
                 }
             }
