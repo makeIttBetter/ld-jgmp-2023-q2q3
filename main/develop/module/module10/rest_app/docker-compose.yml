@@ -23,7 +23,7 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - ./src/main/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
     image: grafana/grafana
@@ -33,5 +33,5 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./src/main/resources/grafana-dashboards:/var/lib/grafana/dashboards
-      - ./src/main/resources/grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/grafana-dashboards:/var/lib/grafana/dashboards
+      - ./grafana/grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards

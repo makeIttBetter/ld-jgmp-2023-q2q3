@@ -1,0 +1,26 @@
+mysql:
+  image: mysql:latest
+  port: 3306
+  database: testdb
+  rootPassword: root-password
+  user: testuser
+  password: testpass
+
+restapp:
+  image: test-springboot-rest-app:latest
+  port: 8080
+  mysqlUser: testuser
+  mysqlPass: testpass
+  url: "jdbc:mysql://mysql-container/testdb"
+
+grafana:
+  image: grafana/grafana
+  port: 3000
+  adminUser: admin
+  adminPass: admin
+
+prometheus:
+  image: prom/prometheus
+  port: 9090
+  scrapeInterval: 5s
+  target: test-springboot-rest-app:8080

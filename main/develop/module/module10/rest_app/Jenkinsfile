@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+     environment {
+            DEPLOYMENT_NAME = 'test-springboot-rest-app'
+            NAMESPACE = 'module10'
+            DOCKERHUB_CREDENTIALS = 'GitHub_read_write'
+            DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${DEPLOYMENT_NAME}-${env.BUILD_ID}"
+            CHART_PATH = 'main/develop/module/module10/rest_app/helm/module10-app'
+            RELEASE_NAME = 'test-springboot-release'
+            KUBECONFIG_PATH=main/develop/module/module10/rest_app/kube-config
+        }
+
+    stages {
+         stage('Prepare and Copy Artifacts') {
+             steps {
+                 script {
+                     // Copy artifacts from 'continuous_m10' job
+                     copyArtifacts projectName: 'continuous_m10', filter: 'main/develop/module/module10/rest_app/*.jar'
+                 }
+             }
+         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    checkout scm
+                    def dockerfilePath = 'main/develop/module/module10/rest_app/Dockerfile'
+                    def appImage = docker.build("${DOCKER_IMAGE_NAME}", "-f ${dockerfilePath} .")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    def appImage = docker.image("${DOCKER_IMAGE_NAME}")
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
+                        appImage.push("${DEPLOYMENT_NAME}-${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes with Helm') {
+            steps {
+                script {
+                    // Ensure the namespace exists
+                    bat """
+                       set KUBECONFIG=%KUBECONFIG_PATH%
+                       kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+
+                        helm dependency update %CHART_PATH%"
+
+                        helm upgrade --install %RELEASE_NAME% %CHART_PATH% ^
+                        --namespace %NAMESPACE% ^
+                        --set image.repository=%DOCKER_IMAGE_NAME% ^
+                        --set image.tag=%DEPLOYMENT_NAME%-%BUILD_ID%
+                    """
+                }
+            }
+        }
+
+    }
+}

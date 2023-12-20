@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: module10-rest-app
+spec:
+  selector:
+    matchLabels:
+      app: module10-rest-app
+  template:
+    metadata:
+      labels:
+        app: module10-rest-app
+    spec:
+      containers:
+        - name: module10-rest-app
+          image: "{{ .Values.restapp.image }}"
+          ports:
+            - containerPort: {{ .Values.restapp.port }}
+          env:
+            - name: MYSQL_URL
+              value: "{{ .Values.restapp.url }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.app.mysqlUser }}"
+            - name: MYSQL_PASS
+              value: "{{ .Values.app.mysqlPass }}"
