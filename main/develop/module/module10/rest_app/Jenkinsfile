@@ -10,6 +10,7 @@ pipeline {
             CHART_PATH = 'main/develop/module/module10/rest_app/helm/module10-app'
             RELEASE_NAME = "${DEPLOYMENT_NAME}-${NAMESPACE}"
             KUBECONFIG_PATH = 'main/develop/module/module10/rest_app/kube-config'
+            GRAFANA_DASHBOARDS_PATH = 'main/develop/module/module10/rest_app/grafana'
         }
 
     stages {
@@ -50,6 +51,9 @@ pipeline {
                     bat """
                        set KUBECONFIG=%KUBECONFIG_PATH%
                        kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+
+                       kubectl create configmap grafana-dashboards --from-file=%GRAFANA_DASHBOARDS_PATH%/grafana-dashboards -n module10
+                       kubectl create configmap grafana-provisioning-dashboards --from-file=%GRAFANA_DASHBOARDS_PATH%/grafana-provisioning/dashboards -n module10
 
                         helm dependency update %CHART_PATH%"
 
