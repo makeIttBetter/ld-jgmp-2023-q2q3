@@ -7,7 +7,9 @@ mysql:
   password: testpass
 
 restapp:
-  image: test-springboot-rest-app:latest
+  image:
+    repository: dockeruser111111111/jgmp-test
+    tag: latest # It will be overwritten by the CI/CD pipeline (Jenkinsfile)
   port: 8080
   mysqlUser: testuser
   mysqlPass: testpass
