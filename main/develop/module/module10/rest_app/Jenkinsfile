@@ -16,7 +16,7 @@ pipeline {
              steps {
                  script {
                      // Copy artifacts from 'continuous_m10' job
-                     copyArtifacts projectName: 'continuous_m10', filter: 'main/develop/module/module10/rest_app/target/*.jar'
+                     copyArtifacts projectName: 'continuous_m10', filter: 'main/develop/module/module10/rest_app/target/*.jar', target: 'main/develop/module/module10/rest_app'
                  }
              }
          }
