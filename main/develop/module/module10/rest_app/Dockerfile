@@ -1,2 +1,3 @@
 FROM bellsoft/liberica-openjdk-alpine-musl
-CMD ["java","-jar","module10.rest-app-1.0-SNAPSHOT.jar"]
+COPY target/module10.rest-app-1.0-SNAPSHOT.jar /app/
+CMD ["java","-jar","/app/module10.rest-app-1.0-SNAPSHOT.jar"]
