@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: module10-rest-app
-          image: "{{ .Values.restapp.image }}"
+          image: "{{ .Values.restapp.image.repository }}:{{ .Values.restapp.image.tag }}"
           ports:
             - containerPort: {{ .Values.restapp.port }}
           env:
