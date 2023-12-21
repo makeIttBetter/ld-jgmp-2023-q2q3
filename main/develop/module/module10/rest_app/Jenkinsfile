@@ -4,7 +4,7 @@ pipeline {
      environment {
             DEPLOYMENT_NAME = 'test-springboot-rest-app'
             NAMESPACE = 'module10'
-            DOCKERHUB_CREDENTIALS = 'GitHub_read_write'
+            DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
             DOCKER_IMAGE_NAME = "dockeruser111111111/jgmp-test:${DEPLOYMENT_NAME}-${env.BUILD_ID}"
             CHART_PATH = 'main/develop/module/module10/rest_app/helm/module10-app'
             RELEASE_NAME = 'test-springboot-release'
