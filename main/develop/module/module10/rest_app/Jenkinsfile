@@ -36,7 +36,7 @@ pipeline {
                 script {
                     def appImage = docker.image("${DOCKER_IMAGE_NAME}")
                     docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
-                        appImage.push("${DEPLOYMENT_NAME}-${env.BUILD_ID}")
+                    appImage.push("${DEPLOYMENT_NAME}-${env.BUILD_ID}")
                     }
                 }
             }
