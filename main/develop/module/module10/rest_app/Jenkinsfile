@@ -8,7 +8,7 @@ pipeline {
             DOCKER_REPOSITORY = "dockeruser111111111/jgmp-test"
             DOCKER_IMAGE_NAME = "${DOCKER_REPOSITORY}:${DEPLOYMENT_NAME}-${env.BUILD_ID}"
             CHART_PATH = 'main/develop/module/module10/rest_app/helm/module10-app'
-            RELEASE_NAME = "${DEPLOYMENT_NAME}-${NAMESPACE}-${env.BUILD_ID}"
+            RELEASE_NAME = "${DEPLOYMENT_NAME}-${NAMESPACE}"
             KUBECONFIG_PATH = 'main/develop/module/module10/rest_app/kube-config'
         }
 
