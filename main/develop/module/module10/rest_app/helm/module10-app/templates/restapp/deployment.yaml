@@ -20,6 +20,6 @@ spec:
             - name: MYSQL_URL
               value: "{{ .Values.restapp.url }}"
             - name: MYSQL_USER
-              value: "{{ .Values.app.mysqlUser }}"
+              value: "{{ .Values.restapp.mysqlUser }}"
             - name: MYSQL_PASS
-              value: "{{ .Values.app.mysqlPass }}"
+              value: "{{ .Values.restapp.mysqlPass }}"
