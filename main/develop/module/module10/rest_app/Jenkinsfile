@@ -48,20 +48,11 @@ pipeline {
         stage('Create Kubernetes secrets') {
             steps {
                 script {
-                    // Ensure the namespace exists
                     bat """
-                        powershell -command "& {
-                            \$secretsFile = '%SECRETS_FILE%'
-                            \$client_id = (Get-Content \$secretsFile | ConvertFrom-Yaml).githubOAuth.clientId
-                            \$client_secret = (Get-Content \$secretsFile | ConvertFrom-Yaml).githubOAuth.clientSecret
-                            \$namespace = '%NAMESPACE%'
-                            \$secretName = 'github-oauth-secret'
-
-                            kubectl create secret generic \$secretName `
-                              --from-literal=client-id='\$client_id' `
-                              --from-literal=client-secret='\$client_secret' `
-                              -n \$namespace --dry-run=client -o yaml | kubectl apply -f -
-                        }"
+                        kubectl create secret generic github-oauth-secret ^
+                          --from-literal=client-id=%GITHUB_CLIENT_ID% ^
+                          --from-literal=client-secret=%GITHUB_CLIENT_SECRET% ^
+                          -n %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
                     """
                 }
             }
