@@ -11,6 +11,7 @@ pipeline {
             RELEASE_NAME = "${DEPLOYMENT_NAME}-${NAMESPACE}"
             KUBECONFIG_PATH = 'main/develop/module/module10/rest_app/kube-config'
             GRAFANA_DASHBOARDS_PATH = 'main/develop/module/module10/rest_app/grafana'
+            SECRETS_FILE = 'main/develop/module/module10/rest_app/helm/module10-app/values-secrets.yaml'
         }
 
     stages {
@@ -43,6 +44,30 @@ pipeline {
                 }
             }
         }
+
+        stage('Create Kubernetes secrets') {
+            steps {
+                script {
+                    // Ensure the namespace exists
+                    bat """
+                        powershell -command "& {
+                            \$secretsFile = '%SECRETS_FILE%'
+                            \$client_id = (Get-Content \$secretsFile | ConvertFrom-Yaml).githubOAuth.clientId
+                            \$client_secret = (Get-Content \$secretsFile | ConvertFrom-Yaml).githubOAuth.clientSecret
+                            \$namespace = '%NAMESPACE%'
+                            \$secretName = 'github-oauth-secret'
+
+                            kubectl create secret generic \$secretName `
+                              --from-literal=client-id='\$client_id' `
+                              --from-literal=client-secret='\$client_secret' `
+                              -n \$namespace --dry-run=client -o yaml | kubectl apply -f -
+                        }"
+                    """
+                }
+            }
+        }
+
+
 
         stage('Deploy to Kubernetes with Helm') {
             steps {

@@ -23,3 +23,15 @@ spec:
               value: "{{ .Values.restapp.mysqlUser }}"
             - name: MYSQL_PASS
               value: "{{ .Values.restapp.mysqlPass }}"
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: github-oauth-secret
+                  key: client-id
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: github-oauth-secret
+                  key: client-secret
+            - name: SPRING_PROFILES_ACTIVE
+              value: "{{ .Values.restapp.config.springProfile }}"

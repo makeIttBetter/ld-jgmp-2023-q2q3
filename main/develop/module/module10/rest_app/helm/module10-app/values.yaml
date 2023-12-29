@@ -14,6 +14,8 @@ restapp:
   mysqlUser: testuser
   mysqlPass: testpass
   url: "jdbc:mysql://mysql-container/testdb"
+  config:
+    springProfile: "dev"
 
 grafana:
   image: grafana/grafana
