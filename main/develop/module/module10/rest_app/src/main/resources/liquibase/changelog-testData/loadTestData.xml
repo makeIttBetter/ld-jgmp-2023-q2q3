@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Importing roles -->
+    <changeSet id="import role" author="author">
+        <loadData
+                file="classpath:liquibase/data-load/testData/role.csv"
+                separator=","
+                tableName="role">
+            <column name="id" type="STRING"/>
+            <column name="constant_code" type="STRING"/>
+        </loadData>
+    </changeSet>
+
+    <!-- Importing users -->
+    <changeSet id="import user" author="author">
+        <loadData
+                file="classpath:liquibase/data-load/testData/user.csv"
+                separator=","
+                tableName="user">
+            <column name="id" type="STRING"/>
+            <column name="username" type="STRING"/>
+            <column name="password" type="STRING"/>
+            <column name="name" type="STRING"/>
+            <column name="email" type="STRING"/>
+        </loadData>
+    </changeSet>
+
+    <!-- Associating users with roles -->
+    <changeSet id="import user-role" author="author">
+        <loadData
+                file="classpath:liquibase/data-load/testData/user_role.csv"
+                separator=","
+                tableName="user_role">
+            <column name="user_id" type="STRING"/>
+            <column name="role_id" type="STRING"/>
+        </loadData>
+    </changeSet>
+
+    <!-- Importing events -->
+    <changeSet id="import event" author="author">
+        <loadData
+                file="classpath:liquibase/data-load/testData/events.csv"
+                separator=","
+                tableName="event"> <!-- assuming your table is named 'events' -->
+            <column name="id" type="STRING"/>
+            <column name="title" type="STRING"/>
+            <column name="date" type="STRING"/> <!-- Adjust type if date is stored differently -->
+        </loadData>
+    </changeSet>
+
+    <!-- Importing tickets -->
+    <changeSet id="import ticket" author="author">
+        <loadData
+                file="classpath:liquibase/data-load/testData/tickets.csv"
+                separator=","
+                tableName="ticket"> <!-- assuming your table is named 'tickets' -->
+            <column name="id" type="STRING"/>
+            <column name="user_id" type="STRING"/>
+            <column name="event_id" type="STRING"/>
+            <column name="place" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+
+</databaseChangeLog>

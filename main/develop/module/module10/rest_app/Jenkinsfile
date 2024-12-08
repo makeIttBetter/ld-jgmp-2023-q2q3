@@ -1,0 +1,85 @@
+pipeline {
+    agent any
+
+     environment {
+            DEPLOYMENT_NAME = 'test-springboot-rest-app'
+            NAMESPACE = 'module10'
+            DOCKERHUB_CREDENTIALS = 'jenkins-docker-jgmp'
+            DOCKER_REPOSITORY = "dockeruser111111111/jgmp-test"
+            DOCKER_IMAGE_NAME = "${DOCKER_REPOSITORY}:${DEPLOYMENT_NAME}-${env.BUILD_ID}"
+            CHART_PATH = 'main/develop/module/module10/rest_app/helm/module10-app'
+            RELEASE_NAME = "${DEPLOYMENT_NAME}-${NAMESPACE}"
+            KUBECONFIG_PATH = 'main/develop/module/module10/rest_app/kube-config'
+            GRAFANA_DASHBOARDS_PATH = 'main/develop/module/module10/rest_app/grafana'
+            SECRETS_FILE = 'main/develop/module/module10/rest_app/helm/module10-app/values-secrets.yaml'
+        }
+
+    stages {
+         stage('Prepare and Copy Artifacts') {
+             steps {
+                 script {
+                     // Copy artifacts from 'continuous_m10' job
+                     copyArtifacts projectName: 'continuous_m10', filter: 'main/develop/module/module10/rest_app/target/*.jar', target: 'main/develop/module/module10/rest_app'
+                 }
+             }
+         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    checkout scm
+                    def dockerfilePath = 'main/develop/module/module10/rest_app/Dockerfile'
+                    def appImage = docker.build("${DOCKER_IMAGE_NAME}", "-f ${dockerfilePath} .")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    def appImage = docker.image("${DOCKER_IMAGE_NAME}")
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
+                    appImage.push("${DEPLOYMENT_NAME}-${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+        stage('Create Kubernetes secrets') {
+            steps {
+                script {
+                    bat """
+                        kubectl create secret generic github-oauth-secret ^
+                          --from-literal=client-id=%GITHUB_CLIENT_ID% ^
+                          --from-literal=client-secret=%GITHUB_CLIENT_SECRET% ^
+                          -n %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+                    """
+                }
+            }
+        }
+
+
+
+        stage('Deploy to Kubernetes with Helm') {
+            steps {
+                script {
+                    // Ensure the namespace exists
+                    bat """
+                       set KUBECONFIG=%KUBECONFIG_PATH%
+                       kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+
+                       kubectl create configmap grafana-dashboards --from-file=%GRAFANA_DASHBOARDS_PATH%/grafana-dashboards -n module10
+                       kubectl create configmap grafana-provisioning-dashboards --from-file=%GRAFANA_DASHBOARDS_PATH%/grafana-provisioning/dashboards -n module10
+
+                        helm dependency update %CHART_PATH%"
+
+                        helm upgrade --install %RELEASE_NAME% %CHART_PATH% ^
+                        --namespace %NAMESPACE% ^
+                        --set restapp.image.tag=%DEPLOYMENT_NAME%-%BUILD_ID%
+                    """
+                }
+            }
+        }
+
+    }
+}

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  labels:
+    app: prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 5s
+      external_labels:
+        monitor: 'codelab-monitor'
+    scrape_configs:
+      - job_name: 'test-springboot-rest-app'
+        scrape_interval: 5s
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ "{{ .Values.prometheus.target }}" ]
