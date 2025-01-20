@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: module11-rest-app
+spec:
+  selector:
+    matchLabels:
+      app: module11-rest-app
+  template:
+    metadata:
+      labels:
+        app: module11-rest-app
+    spec:
+      containers:
+        - name: module11-rest-app
+          image: "{{ .Values.restapp.image.repository }}:{{ .Values.restapp.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.restapp.port }}
+          env:
+            - name: MYSQL_URL
+              value: "{{ .Values.restapp.url }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.restapp.mysqlUser }}"
+            - name: MYSQL_PASS
+              value: "{{ .Values.restapp.mysqlPass }}"
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: github-oauth-secret
+                  key: client-id
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: github-oauth-secret
+                  key: client-secret
+            - name: SPRING_PROFILES_ACTIVE
+              value: "{{ .Values.restapp.config.springProfile }}"
