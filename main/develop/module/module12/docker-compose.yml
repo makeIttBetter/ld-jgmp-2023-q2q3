@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+  discovery-service:
+    build:
+      context: ./discovery-service
+      dockerfile: Dockerfile
+    container_name: discovery-service
+    env_file:
+      - ./.env
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+    depends_on:
+      - logstash
+    environment:
+      SPRING_APPLICATION_NAME: DISCOVERY-SERVICE
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    env_file:
+      - ./.env
+    ports:
+      - "9000:9000"
+    networks:
+      - microservices-network
+    depends_on:
+      - discovery-service
+      - logstash
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    env_file:
+      - ./.env
+    ports:
+      - "9001:9001"
+    networks:
+      - microservices-network
+    depends_on:
+      - discovery-service
+      - logstash
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    env_file:
+      - ./.env
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices-network
+    depends_on:
+      - discovery-service
+      - auth-service
+      - user-service
+      - logstash
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.10.2
+    container_name: logstash
+    ports:
+      - "5044:5044"
+    networks:
+      - microservices-network
+    volumes:
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5044
+
+networks:
+  microservices-network:
+    driver: bridge
+

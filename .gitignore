@@ -40,3 +40,8 @@ out/
 #**/gradlew
 #**/gradlew.bat
 **/dependency-reduced-pom.xml
+
+### .env files ###
+.env
+*.env
+*.env.*
