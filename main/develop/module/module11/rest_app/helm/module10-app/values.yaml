@@ -1,0 +1,30 @@
+mysql:
+  image: mysql:latest
+  port: 3306
+  database: testdb
+  rootPassword: root-password
+  user: testuser
+  password: testpass
+
+restapp:
+  image:
+    repository: dockeruser111111111/jgmp-test
+    tag: latest # It will be overwritten by the CI/CD pipeline (Jenkinsfile)
+  port: 8080
+  mysqlUser: testuser
+  mysqlPass: testpass
+  url: "jdbc:mysql://mysql-container/testdb"
+  config:
+    springProfile: "dev"
+
+grafana:
+  image: grafana/grafana
+  port: 3000
+  adminUser: admin
+  adminPass: admin
+
+prometheus:
+  image: prom/prometheus
+  port: 9090
+  scrapeInterval: 5s
+  target: test-springboot-rest-app:8080
