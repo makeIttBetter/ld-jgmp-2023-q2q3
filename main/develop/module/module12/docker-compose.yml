@@ -12,8 +12,6 @@ services:
       - "8761:8761"
     networks:
       - microservices-network
-    depends_on:
-      - logstash
     environment:
       SPRING_APPLICATION_NAME: DISCOVERY-SERVICE
     healthcheck:
@@ -35,7 +33,6 @@ services:
       - microservices-network
     depends_on:
       - discovery-service
-      - logstash
 
   user-service:
     build:
@@ -50,7 +47,6 @@ services:
       - microservices-network
     depends_on:
       - discovery-service
-      - logstash
 
   gateway-service:
     build:
@@ -67,23 +63,7 @@ services:
       - discovery-service
       - auth-service
       - user-service
-      - logstash
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.10.2
-    container_name: logstash
-    ports:
-      - "5044:5044"
-    networks:
-      - microservices-network
-    volumes:
-      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-      LOGSTASH_HOST: logstash
-      LOGSTASH_PORT: 5044
 
 networks:
   microservices-network:
-    driver: bridge
-
+    external: true

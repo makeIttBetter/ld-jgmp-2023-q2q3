@@ -1,0 +1,91 @@
+version: '3.9'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+      - xpack.monitoring.collection.enabled=true
+      - xpack.ml.enabled=false
+      - cluster.name=es-cluster
+      - node.name=es-node
+      - path.data=/usr/share/elasticsearch/data
+      - path.logs=/usr/share/elasticsearch/logs
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    container_name: logstash
+    ports:
+      - "5044:5044"
+    networks:
+      - microservices-network
+    volumes:
+      - ./pipeline/:/usr/share/logstash/pipeline/
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOG_RETENTION_DAYS: 7
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - microservices-network
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      SERVER_NAME: kibana
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  es-setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: es-setup
+    networks:
+      - microservices-network
+    volumes:
+      - ./setup/elasticsearch-setup.sh:/usr/share/elasticsearch/setup.sh
+    environment:
+      - LOG_RETENTION_DAYS=7
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-c", "sh /usr/share/elasticsearch/setup.sh"]
+    restart: "no"
+
+networks:
+  microservices-network:
+    external: true
+
+volumes:
+  es-data:
+    driver: local
