@@ -1,0 +1,76 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: GATEWAY-SERVICE
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+
+        - id: camunda-service
+          uri: lb://CAMUNDA-SERVICE
+          predicates:
+            - Path=/bpmn/**
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"
+              - "http://localhost:3001"
+              - "http://localhost:3002"
+            allowedMethods:
+              - "GET"
+              - "POST"
+              - "PUT"
+              - "PATCH"
+              - "DELETE"
+              - "OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+
+custom:
+  security:
+    public-paths:
+      - /auth/**
+      - /actuator/**
+      - /eureka/**
+
+    secured-paths:
+      - /**
+
+
+logging:
+  level:
+    com.example.gateway: INFO
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    #    nonSecurePort: 8080
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http:/localhost:8761/eureka/}

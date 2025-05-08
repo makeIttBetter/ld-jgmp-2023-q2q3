@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- 1) Log level property -->
+    <property name="LOG_LEVEL" value="${LOG_LEVEL:INFO}" />
+
+    <!-- 2) Environment-based toggles -->
+    <property name="LOGSTASH_ENABLED" value="${LOGSTASH_ENABLED:true}" />
+    <property name="LOGSTASH_HOST" value="${LOGSTASH_HOST:logstash}" />
+    <property name="LOGSTASH_PORT" value="${LOGSTASH_PORT:5044}" />
+
+    <property name="FILE_LOGGING_ENABLED" value="${FILE_LOGGING_ENABLED:true}" />
+    <property name="LOG_FILE_PATH" value="${LOG_FILE_PATH:/var/log/app.log}" />
+
+    <!-- 3) Console log pattern with traceId/spanId from Sleuth -->
+    <property name="CONSOLE_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level traceId=%X{traceId} spanId=%X{spanId} %logger{36} - %msg%n"/>
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File Appender (only if FILE_LOGGING_ENABLED=true) -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_FILE_PATH}</file>
+        <append>true</append>
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return "${FILE_LOGGING_ENABLED}" == "true";</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+    </appender>
+
+    <!-- Logstash Appender (only if LOGSTASH_ENABLED=true) -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <keepAliveDuration>60000</keepAliveDuration>
+        <writeBufferSize>8192</writeBufferSize>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"traceId":"%X{traceId}","spanId":"%X{spanId}"}</customFields>
+        </encoder>
+
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return "${LOGSTASH_ENABLED}" == "true";</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+
+        <destination>logstash:5044</destination>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <!-- Always console -->
+        <appender-ref ref="CONSOLE" />
+
+        <!-- File if enabled -->
+        <appender-ref ref="FILE" />
+
+        <!-- Logstash if enabled -->
+        <appender-ref ref="LOGSTASH" />
+    </root>
+
+</configuration>

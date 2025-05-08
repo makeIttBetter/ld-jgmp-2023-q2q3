@@ -1,0 +1,21 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: AUTH-SERVICE
+
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http:/localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
